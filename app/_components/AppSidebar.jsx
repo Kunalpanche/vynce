@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import { Button } from "@/components/ui/button";
 import {
   Sidebar,
@@ -7,12 +7,15 @@ import {
   SidebarGroup,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-import { Ghost, LogIn, MessageCirclePlus, Moon, Plus, Sun } from "lucide-react";
+import { SignInButton, useUser } from "@clerk/nextjs";
+import { Bolt, Ghost, LogIn, MessageCirclePlus, Moon, Plus, Settings2, SquareUserRoundIcon, Sun, User, Zap } from "lucide-react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
+import CreditUsage from "./CreditUsage";
 // ...existing code...
 export function AppSidebar() {
   const { theme, setTheme } = useTheme();
+  const { user } = useUser();
   return (
     <Sidebar>
       <SidebarHeader>
@@ -28,7 +31,7 @@ export function AppSidebar() {
               />
               <h1 className="font-bold text-xl">Vynce</h1>
             </div>
-            <div>
+            <div >
               {theme == "light" ? (
                 <Button variant={Ghost} onClick={() => setTheme("dark")}>
                   <Sun />
@@ -41,9 +44,16 @@ export function AppSidebar() {
             </div>
           </div>
           <div className="mt-8">
-            <Button className="w-full">
-              <MessageCirclePlus className="mr-2"/> New Chat{" "}
+
+            {user? <Button className="w-full">
+              <MessageCirclePlus className="mr-2" /> New Chat{" "}
             </Button>
+            :
+            <SignInButton mode="modal">
+            <Button className="w-full">
+              <MessageCirclePlus className="mr-2" /> New Chat{" "}
+            </Button>
+            </SignInButton>}
           </div>
         </div>
       </SidebarHeader>
@@ -51,15 +61,30 @@ export function AppSidebar() {
         <SidebarGroup>
           <div className="p-2">
             <h2 className="font-bold text-lg">Chat</h2>
-            <p className="text-sm text-muted-foreground">
+            {!user&& <p className="text-sm text-muted-foreground">
               Sign in to explore insights from multiple AI models.
-            </p>
+            </p>}
           </div>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
         <div className="p-2 mb-2">
-          <Button className="w-full"> <LogIn className="mr-2" /> Sign In / Up </Button>
+          {!user ? (
+            <SignInButton mode="modal">
+              <Button className="w-full">
+                {" "}
+                <LogIn className="mr-2" /> Sign In / Up{" "}
+              </Button>
+            </SignInButton>
+          ) : (
+            <div>
+              <CreditUsage/>
+              <Button className='w-full mb-3'> <Zap/>Upgrade to Pro</Button>
+            <Button className='flex w-full' variant={'outline'}>
+             <User /> <h2>Settings</h2>
+            </Button>
+            </div>
+          )}
         </div>
       </SidebarFooter>
     </Sidebar>

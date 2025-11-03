@@ -25,7 +25,7 @@ function AiMultiModels() {
   return (
     <div className="flex flex-1 h-[75vh] border-b">
       {aiModelList.map((model, index) => (
-        <div
+        <div key={index} 
           className={`flex flex-col border-r h-full overflow-auto ${
             model.enable ? "flex-1 min-w-[400px]" : "w-[100px] flex-none"
           }`}
